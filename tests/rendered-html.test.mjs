@@ -37,6 +37,7 @@ test("server-renders the life-respect campaign landing page", async () => {
   assert.match(html, /300 × 250/);
   assert.match(html, /제출 준비도/);
   assert.match(html, /https:\/\/inec\.or\.kr\/board\/detail\/1411/);
+  assert.match(html, /docs\.google\.com\/forms\/d\/e\/1FAIpQLScGjt6biVGbIZaC9OKqkJP2biDVoEzMVgnh8sF52P68t_c5pw/);
   assert.match(html, /https:\/\/www\.kfsp\.or\.kr\//);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
 });
