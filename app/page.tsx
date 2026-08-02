@@ -65,7 +65,7 @@ const checklist = [
   {
     id: "landing",
     label: "스크롤형 랜딩페이지",
-    detail: "배너의 관심—전문 도움 연결이 랜딩의 6개 패널로 이어지는지 확인",
+    detail: "배너의 관심—도움 연결이 랜딩의 6개 패널로 이어지는지 확인",
   },
   {
     id: "brief",
@@ -96,7 +96,31 @@ function drawRoundedRect(
   context.roundRect(x, y, width, height, radius);
 }
 
-function drawBanner(format: BannerFormat) {
+function drawImageCover(
+  context: CanvasRenderingContext2D,
+  image: ImageBitmap,
+  width: number,
+  height: number,
+) {
+  const targetRatio = width / height;
+  const imageRatio = image.width / image.height;
+  let sourceX = 0;
+  let sourceY = 0;
+  let sourceWidth = image.width;
+  let sourceHeight = image.height;
+
+  if (imageRatio > targetRatio) {
+    sourceWidth = image.height * targetRatio;
+    sourceX = (image.width - sourceWidth) / 2;
+  } else {
+    sourceHeight = image.width / targetRatio;
+    sourceY = (image.height - sourceHeight) / 2;
+  }
+
+  context.drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, width, height);
+}
+
+async function drawBanner(format: BannerFormat) {
   const width = format === "square" ? 300 : 160;
   const height = format === "square" ? 250 : 600;
   const scale = 2;
@@ -110,85 +134,114 @@ function drawBanner(format: BannerFormat) {
   context.fillStyle = "#f8f2e8";
   context.fillRect(0, 0, width, height);
 
+  try {
+    const response = await fetch("/life-thread-oil-v2.png");
+    if (response.ok) {
+      const image = await createImageBitmap(await response.blob());
+      context.save();
+      context.globalAlpha = format === "square" ? 0.62 : 0.54;
+      if (format === "square") {
+        drawImageCover(context, image, width, height);
+      } else {
+        context.drawImage(image, 0, 0, image.width, image.height, 0, 68, width, width);
+      }
+      context.restore();
+      image.close();
+    }
+  } catch {
+    // The designed cream base remains usable if the optional background cannot load.
+  }
+
+  context.fillStyle = format === "square" ? "rgba(248,242,232,.38)" : "rgba(248,242,232,.24)";
+  context.fillRect(0, 0, width, height);
+
   const pad = format === "square" ? 18 : 14;
   const small = format === "square" ? 10 : 9;
-  const title = format === "square" ? 22 : 18;
-  const lineY = format === "square" ? 105 : 220;
+  const title = format === "square" ? 20 : 25;
+  const lineY = format === "square" ? 111 : 310;
 
   context.fillStyle = "#15233f";
   context.font = `700 ${small}px Arial, sans-serif`;
   context.fillText("[광고]", pad, pad + 2);
 
-  context.fillStyle = "#d7b34d";
-  context.beginPath();
-  context.arc(width - pad - 10, pad - 2, 9, 0, Math.PI * 2);
-  context.fill();
   context.fillStyle = "#15233f";
-  context.font = `700 ${small}px Arial, sans-serif`;
-  context.fillText("생명", width - pad - 27, pad + 2);
+  context.textAlign = "right";
+  context.font = `700 ${format === "square" ? 7 : 6}px Arial, sans-serif`;
+  context.fillText("한국생명존중", width - pad, pad - 2);
+  context.fillText("희망재단", width - pad, pad + 7);
+  context.textAlign = "left";
 
   const cardWidth = format === "square" ? 82 : width - pad * 2;
   const cardHeight = format === "square" ? 47 : 48;
   const leftX = format === "square" ? pad : pad;
   const rightX = format === "square" ? width - pad - cardWidth : pad;
-  const cardY = format === "square" ? 52 : 91;
+  const cardY = format === "square" ? 52 : 94;
+  const helpY = format === "square" ? cardY : 188;
+
+  context.save();
+  context.strokeStyle = "#e7b82f";
+  context.lineWidth = format === "square" ? 4 : 5;
+  context.lineCap = "round";
+  context.shadowColor = "rgba(21,35,63,.28)";
+  context.shadowBlur = 3;
+  context.beginPath();
+  if (format === "square") {
+    context.moveTo(leftX + cardWidth, cardY + cardHeight / 2);
+    context.bezierCurveTo(
+      width / 2 - 15,
+      cardY - 3,
+      width / 2 + 15,
+      cardY + cardHeight + 3,
+      rightX,
+      helpY + cardHeight / 2,
+    );
+  } else {
+    context.moveTo(width / 2, cardY + cardHeight);
+    context.bezierCurveTo(
+      width / 2 - 17,
+      cardY + cardHeight + 28,
+      width / 2 + 17,
+      helpY - 28,
+      width / 2,
+      helpY,
+    );
+  }
+  context.stroke();
+  context.shadowBlur = 0;
+  context.strokeStyle = "rgba(255,241,157,.9)";
+  context.lineWidth = 1;
+  context.stroke();
+  context.restore();
 
   context.lineWidth = 1.8;
   context.strokeStyle = "#15233f";
-  context.fillStyle = "#fffdf8";
+  context.fillStyle = "rgba(255,253,248,.94)";
   drawRoundedRect(context, leftX, cardY, cardWidth, cardHeight, 12);
   context.fill();
   context.stroke();
-  if (format === "square") {
-    drawRoundedRect(context, rightX, cardY, cardWidth, cardHeight, 12);
-    context.fill();
-    context.stroke();
-  }
+  drawRoundedRect(context, rightX, helpY, cardWidth, cardHeight, 12);
+  context.fill();
+  context.stroke();
 
   context.fillStyle = "#15233f";
   context.font = `700 ${format === "square" ? 16 : 14}px Arial, sans-serif`;
   context.fillText("관심", leftX + 26, cardY + 30);
   if (format === "square") {
-    context.fillText("전문 도움", rightX + 12, cardY + 30);
+    context.fillText("도움", rightX + 26, helpY + 30);
   } else {
-    context.fillText("전문 도움", leftX + 22, cardY + 30);
+    context.fillText("도움", rightX + 50, helpY + 30);
   }
-
-  context.strokeStyle = "#d7b34d";
-  context.lineWidth = 3;
-  context.beginPath();
-  if (format === "square") {
-    context.moveTo(leftX + cardWidth, cardY + cardHeight / 2);
-    context.bezierCurveTo(
-      width / 2 - 13,
-      cardY - 4,
-      width / 2 + 13,
-      cardY + cardHeight + 4,
-      rightX,
-      cardY + cardHeight / 2,
-    );
-  } else {
-    context.moveTo(width / 2, cardY + cardHeight);
-    context.bezierCurveTo(
-      width / 2 - 18,
-      cardY + cardHeight + 30,
-      width / 2 + 18,
-      cardY + cardHeight + 34,
-      width / 2,
-      cardY + cardHeight + 56,
-    );
-  }
-  context.stroke();
 
   context.fillStyle = "#15233f";
   context.font = `700 ${title}px Arial, sans-serif`;
   if (format === "square") {
-    context.fillText("관심이,", pad, lineY + 28);
-    context.fillText("도움에 닿도록.", pad, lineY + 57);
+    context.fillText("도움은", pad, lineY + 20);
+    context.fillText("연결될 때", pad, lineY + 43);
+    context.fillText("가까워집니다.", pad, lineY + 66);
   } else {
-    context.fillText("관심이,", pad, lineY + 26);
-    context.fillText("도움에", pad, lineY + 53);
-    context.fillText("닿도록.", pad, lineY + 80);
+    context.fillText("도움은", pad, lineY + 26);
+    context.fillText("연결될 때", pad, lineY + 58);
+    context.fillText("가까워집니다.", pad, lineY + 90);
   }
 
   context.fillStyle = "#d7b34d";
@@ -291,13 +344,15 @@ export default function LifeRespectPage() {
           <div className="hero-copy" data-reveal>
             <p className="eyebrow"><span>02</span> 한국생명존중희망재단 가치 확산 광고</p>
             <h1>
-              관심이,
+              도움은
               <br />
-              <em>도움에 닿도록.</em>
+              <em>연결될 때</em>
+              <br />
+              가까워집니다.
             </h1>
             <p className="hero-lede">
-              한 번 더 묻는 일은 시작입니다. 그 관심이 교육과 정확한 정보,
-              지역의 전문적인 도움까지 이어질 때 사회의 연결망이 됩니다.
+              관심은 출발점입니다. 그 관심이 교육과 정확한 정보, 지역의
+              전문적인 지원으로 이어질 때 도움은 비로소 가까워집니다.
             </p>
             <div className="hero-actions">
               <a className="button button-primary" href="#why">
@@ -313,15 +368,15 @@ export default function LifeRespectPage() {
             </div>
           </div>
 
-          <div className="hero-art" data-reveal aria-label="관심과 전문 도움을 잇는 노란 실 그래픽">
+          <div className="hero-art" data-reveal aria-label="관심과 도움을 실제 노란 실로 잇는 유화 그래픽">
             <div className="art-meta"><span>[광고]</span><span>LINK / 01</span></div>
             <div className="art-stage">
               <div className="art-card art-card-interest"><span className="card-kicker">START</span><strong>관심</strong><span>한 번 더 묻는 일</span></div>
               <div className="thread-thread" aria-hidden="true"><i /><i /><i /></div>
-              <div className="art-card art-card-help"><span className="card-kicker">NEXT</span><strong>전문 도움</strong><span>사회가 이어 주는 곳</span></div>
+              <div className="art-card art-card-help"><span className="card-kicker">NEXT</span><strong>도움</strong><span>사회가 이어 주는 곳</span></div>
               <div className="art-caption"><span>사람</span><span>사이의</span><span>링크</span></div>
             </div>
-            <div className="art-foot"><span>관심은 출발점</span><span>도움은 연결될 때 가까워집니다</span></div>
+            <div className="art-foot"><span>관심은 출발점</span><span>도움은 연결될 때 가까워집니다.</span></div>
           </div>
         </div>
         <a className="scroll-cue" href="#why"><span>scroll to connect</span><i aria-hidden="true" /></a>
@@ -337,9 +392,9 @@ export default function LifeRespectPage() {
           </div>
           <div className="pull-quote" data-reveal>
             <span className="quote-mark">“</span>
-            <p>관심이<br /><strong>도움에 닿도록.</strong></p>
+            <p>도움은<br /><strong>연결될 때 가까워집니다.</strong></p>
             <span className="quote-rule" />
-            <small>사람과 사람 사이, 관심과 전문 도움 사이를 잇는 한 줄</small>
+            <small>사람과 사람 사이, 관심과 도움 사이를 잇는 한 줄</small>
           </div>
         </div>
       </section>
@@ -392,8 +447,8 @@ export default function LifeRespectPage() {
 
       <section className="banner-section section" id="banner" aria-labelledby="banner-heading">
         <div className="container banner-grid">
-          <div className="banner-copy" data-reveal><p className="eyebrow"><span>05</span> 실제 광고 시안</p><h2 id="banner-heading">작은 배너에도<br /><em>연결은 보이게.</em></h2><p>300×250 한 칸 안에서 광고 표기, 관심과 전문 도움, 메인 카피, 랜딩 CTA가 바로 읽히도록 압축했습니다. 아래 버튼으로 제출용 PNG를 즉시 내려받을 수 있습니다.</p><div className="format-switch" role="group" aria-label="배너 규격 선택"><button className={format === "square" ? "active" : ""} onClick={() => setFormat("square")} type="button">300 × 250</button><button className={format === "tower" ? "active" : ""} onClick={() => setFormat("tower")} type="button">160 × 600</button></div><button className="button button-primary download-button" type="button" onClick={() => { drawBanner(format); announce("배너 PNG 다운로드를 시작했습니다."); }}>현재 규격 PNG 다운로드 <span aria-hidden="true">↓</span></button><p className="micro-note">※ 기관 로고는 주최 측 승인본을 받는 즉시 교체합니다.</p></div>
-          <div className="banner-display" data-reveal><div className={`banner-frame ${format}`}><div className="banner-label">[광고]</div><div className="banner-logo-placeholder" aria-label="한국생명존중희망재단 표기">한국생명존중<br />희망재단</div><div className="banner-cards"><div className="mini-card">관심</div><span className="mini-thread" aria-hidden="true" /><div className="mini-card">전문 도움</div></div><h3>관심이,<br /><strong>도움에 닿도록.</strong></h3><button type="button" onClick={() => document.getElementById("why")?.scrollIntoView({ behavior: "smooth" })}>생명존중의 연결망 보기 <span aria-hidden="true">→</span></button></div><div className="banner-size-note"><span>LIVE MOCKUP</span><span>{format === "square" ? "300 × 250 px" : "160 × 600 px"}</span></div></div>
+          <div className="banner-copy" data-reveal><p className="eyebrow"><span>05</span> 실제 광고 시안</p><h2 id="banner-heading">작은 배너에도<br /><em>연결은 보이게.</em></h2><p>300×250 한 칸 안에서 광고 표기, 관심과 도움, 메인 카피, 랜딩 CTA가 바로 읽히도록 압축했습니다. 유화 속 금빛 실과 카드 사이의 실제 줄이 같은 연결을 두 겹으로 보여 줍니다.</p><div className="format-switch" role="group" aria-label="배너 규격 선택"><button className={format === "square" ? "active" : ""} onClick={() => setFormat("square")} type="button">300 × 250</button><button className={format === "tower" ? "active" : ""} onClick={() => setFormat("tower")} type="button">160 × 600</button></div><button className="button button-primary download-button" type="button" onClick={async () => { await drawBanner(format); announce("배너 PNG 다운로드를 시작했습니다."); }}>현재 규격 PNG 다운로드 <span aria-hidden="true">↓</span></button><p className="micro-note">※ 기관 로고는 주최 측 승인본을 받는 즉시 교체합니다.</p></div>
+          <div className="banner-display" data-reveal><div className={`banner-frame ${format}`}><div className="banner-label">[광고]</div><div className="banner-logo-placeholder" aria-label="한국생명존중희망재단 표기">한국생명존중<br />희망재단</div><div className="banner-cards"><div className="mini-card">관심</div><span className="mini-thread" aria-hidden="true" /><div className="mini-card">도움</div></div><h3>도움은<br /><strong>연결될 때</strong><br />가까워집니다.</h3><button type="button" onClick={() => document.getElementById("why")?.scrollIntoView({ behavior: "smooth" })}>생명존중의 연결망 보기 <span aria-hidden="true">→</span></button></div><div className="banner-size-note"><span>LIVE MOCKUP</span><span>{format === "square" ? "300 × 250 px" : "160 × 600 px"}</span></div></div>
         </div>
       </section>
 
@@ -406,7 +461,7 @@ export default function LifeRespectPage() {
 
       <footer className="footer">
         <div className="container footer-grid"><div><a className="brand footer-brand" href="#top"><span className="brand-mark" aria-hidden="true"><span /><span /></span><span>사람 사이의 링크</span></a><p>2026 전국 대학생 생명존중 광고공모전<br />한국생명존중희망재단 가치 확산 광고 부문</p></div><div className="footer-links"><a href={OFFICIAL_SUBMISSION_URL} target="_blank" rel="noreferrer">공식 접수 폼 ↗</a><a href={OFFICIAL_CONTEST_URL} target="_blank" rel="noreferrer">공식 공모전 안내 ↗</a><a href={FOUNDATION_URL} target="_blank" rel="noreferrer">재단 공식 사이트 ↗</a><span>캠페인 시안 · 2026</span></div></div>
-        <div className="container footer-bottom"><span>관심이, 도움에 닿도록.</span><span>기관 로고·공식 연결 정보는 승인본으로 최종 교체</span></div>
+        <div className="container footer-bottom"><span>도움은 연결될 때 가까워집니다.</span><span>기관 로고·공식 연결 정보는 승인본으로 최종 교체</span></div>
       </footer>
 
       <div className="sr-only" aria-live="polite">{notice}</div>

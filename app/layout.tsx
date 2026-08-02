@@ -10,31 +10,31 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     metadataBase: origin ? new URL(origin) : undefined,
-    title: "사람 사이의 링크 — 관심이, 도움에 닿도록.",
+    title: "사람 사이의 링크 — 도움은 연결될 때 가까워집니다.",
     description:
-      "2026 전국 대학생 생명존중 광고공모전 출품작 《사람 사이의 링크》. 개인의 관심이 교육·정보·지역의 전문적인 도움으로 이어지는 연결망을 보여 줍니다.",
+      "2026 전국 대학생 생명존중 광고공모전 출품작 《사람 사이의 링크》. 관심과 도움을 한 가닥의 실로 연결합니다.",
     icons: {
       icon: "/favicon.svg",
       shortcut: "/favicon.svg",
     },
     openGraph: {
-      title: "사람 사이의 링크 — 관심이, 도움에 닿도록.",
+      title: "사람 사이의 링크 — 도움은 연결될 때 가까워집니다.",
       description:
-        "한 번 더 묻는 일은 시작입니다. 그 관심이 전문적인 도움까지 닿도록.",
+        "관심은 출발점입니다. 도움은 연결될 때 가까워집니다.",
       type: "website",
       images: [
         {
           url: "/og.png",
           width: 1200,
           height: 630,
-          alt: "사람 사이의 링크 — 관심이, 도움에 닿도록.",
+          alt: "사람 사이의 링크 — 도움은 연결될 때 가까워집니다.",
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: "사람 사이의 링크 — 관심이, 도움에 닿도록.",
-      description: "관심이 전문적인 도움에 닿도록 사회의 연결망을 보여 줍니다.",
+      title: "사람 사이의 링크 — 도움은 연결될 때 가까워집니다.",
+      description: "관심과 도움을 실제 금빛 실로 잇는 생명존중 캠페인입니다.",
       images: ["/og.png"],
     },
   };

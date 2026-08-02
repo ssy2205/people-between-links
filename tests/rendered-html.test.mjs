@@ -30,7 +30,7 @@ test("server-renders the life-respect campaign landing page", async () => {
 
   const html = await response.text();
   assert.match(html, /사람 사이의 링크/);
-  assert.match(html, /관심이,.*도움에 닿도록/);
+  assert.match(html, /도움은.*연결될 때.*가까워집니다/);
   assert.match(html, /한국생명존중희망재단/);
   assert.match(html, /생명지킴이 교육/);
   assert.match(html, /지역기반 예방사업/);
@@ -53,8 +53,11 @@ test("keeps site metadata and assets production-ready", async () => {
   assert.match(layout, /og\.png/);
   assert.match(layout, /lang="ko"/);
   assert.match(page, /drawBanner/);
+  assert.match(page, /life-thread-oil-v2\.png/);
+  assert.match(page, /관심—도움 연결/);
   assert.match(page, /생명존중의 연결망 보기/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
   await access(new URL("../public/og.png", import.meta.url));
+  await access(new URL("../public/life-thread-oil-v2.png", import.meta.url));
   await assert.rejects(access(new URL("../app/_sites-preview", import.meta.url)));
 });
