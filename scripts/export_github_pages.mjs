@@ -57,13 +57,13 @@ async function main() {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#172641">
   <title>지켜보는 사람에서, 지켜주는 사람으로 — 사람 사이의 링크</title>
-  <meta name="description" content="한국생명존중희망재단의 지켜줌인 활동을 소개하고 시민의 관심을 보호 행동으로 연결하는 생명존중 공익 캠페인입니다.">
+  <meta name="description" content="한국생명존중희망재단의 미션과 핵심가치, 지켜줌인 활동을 소개하고 시민의 관심을 생명존중의 공공 행동으로 연결하는 캠페인입니다.">
   <link rel="canonical" href="${pagesUrl}/">
   <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="ko_KR">
   <meta property="og:title" content="지켜보는 사람에서, 지켜주는 사람으로">
-  <meta property="og:description" content="시민의 관심을 참여·교육·공식 신고라는 보호 행동으로 연결하는 한국생명존중희망재단 가치 확산 캠페인">
+  <meta property="og:description" content="존중·공감·협력·전문성이라는 재단의 가치와 지켜줌인 참여를 연결하는 생명존중 공익 캠페인">
   <meta property="og:url" content="${pagesUrl}/">
   <meta property="og:image" content="${pagesUrl}/assets/campaign-banner-300.png">
   <meta property="og:image:width" content="300">

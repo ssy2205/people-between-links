@@ -2,7 +2,7 @@
 
 2026 전국 대학생 생명존중 광고공모전의 `한국생명존중희망재단의 역할과 공공적 가치 확산 광고` 출품용 랜딩페이지입니다.
 
-메인 카피는 **“지켜보는 사람에서, 지켜주는 사람으로.”**이며, 시민의 관심을 보호 행동으로 연결해 지켜줌인 활동 참여를 유도합니다.
+메인 카피는 **“지켜보는 사람에서, 지켜주는 사람으로.”**이며, 한국생명존중희망재단의 미션과 핵심가치(존중·공감·협력·전문성)를 시민의 관심과 지켜줌인 활동 참여로 연결합니다.
 
 ## 공개 페이지
 
@@ -13,8 +13,9 @@ GitHub Pages는 `main` 브랜치의 `/docs` 폴더를 배포합니다.
 ## 주요 산출물
 
 - `public/campaign-banner-300.png` — 300×250 제출용 광고 배너
+- `public/campaign-banner-approved.png` — 사용자가 승인한 최종 배너 원본
 - `docs/` — GitHub Pages용 정적 랜딩페이지
-- `scripts/build_final_banner.py` — 첨부 원본·공식 CI·나눔고딕 기반 배너 빌더
+- `scripts/build_final_banner.py` — 승인된 최종 배너를 제출·배포 위치로 복제하는 빌더
 - `scripts/export_github_pages.mjs` — 앱 빌드 결과를 `/docs`로 내보내는 정적 익스포터
 - `scripts/render_landing_pdf.mjs` — 랜딩 전체를 1200px 단일 스크롤 PDF로 출력
 

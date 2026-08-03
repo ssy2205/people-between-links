@@ -5,6 +5,7 @@ const ACTIVITY_GUIDE_URL =
 const SIMS_URL = "https://sims.kfsp.or.kr/";
 const REPORT_URL = "https://sims.kfsp.or.kr/?pMENU_NO=265";
 const FOUNDATION_URL = "https://www.kfsp.or.kr/";
+const MISSION_URL = "https://www.kfsp.or.kr/home/kor/contents.do?menuPos=95";
 const CONTEST_URL = "https://inec.or.kr/board/detail/1411";
 
 const joinSteps = [
@@ -48,22 +49,28 @@ const activityCards = [
 
 const publicValues = [
   {
-    index: "A",
-    eyebrow: "시민이 함께할 수 있도록",
-    title: "참여의 문",
-    body: "만 19세 이상 국민 누구나 생명존중문화 확산에 참여할 수 있는 시민 활동 경로를 엽니다.",
+    index: "01",
+    eyebrow: "재단의 핵심가치",
+    title: "존중",
+    body: "국민의 소중한 생명을 보호하고 생명존중문화를 조성하는 일을 모든 예방 활동의 출발점으로 삼습니다.",
   },
   {
-    index: "B",
-    eyebrow: "관심이 책임 있게 이어지도록",
-    title: "교육된 실천",
-    body: "1365·SIMS 가입과 사전교육을 거쳐 관심을 책임 있는 온라인 모니터링 활동으로 연결합니다.",
+    index: "02",
+    eyebrow: "재단의 핵심가치",
+    title: "공감",
+    body: "위험 신호를 알아차리고 지속적인 관심을 가지며, 필요한 사람을 전문적인 도움으로 연결합니다.",
   },
   {
-    index: "C",
-    eyebrow: "발견이 공식 행동이 되도록",
-    title: "공적 신고 체계",
-    body: "게시물 신고와 활동 기록이 미디어 자살정보 모니터링 시스템 안에서 이어지게 합니다.",
+    index: "03",
+    eyebrow: "재단의 핵심가치",
+    title: "협력",
+    body: "정부·지역사회·민간기관·플랫폼·시민을 연결해 혼자서는 만들기 어려운 예방의 안전망을 넓힙니다.",
+  },
+  {
+    index: "04",
+    eyebrow: "재단의 핵심가치",
+    title: "전문성",
+    body: "근거 기반 정책과 교육, 자살정보 분석 및 모니터링 체계로 관심이 실효성 있는 예방 행동이 되게 합니다.",
   },
 ] as const;
 
@@ -122,8 +129,8 @@ export default function Home() {
               <em>지켜주는 사람으로.</em>
             </h1>
             <p className="hero-lede">
-              온라인에서 마주친 자살유발정보를 지나치지 않고,
-              지켜줌인 활동으로 생명존중의 환경을 지켜 주세요.
+              재단은 시민의 관심이 안전망으로 이어지도록 교육·모니터링·신고의
+              공적 경로를 만듭니다. 지켜줌인으로 그 연결에 참여해 주세요.
             </p>
             <div className="hero-actions">
               <a
@@ -132,7 +139,7 @@ export default function Home() {
                 target="_blank"
                 rel="noreferrer"
               >
-                지켜줌인 활동 참여하기 <span aria-hidden="true">↗</span>
+                지켜줌인(人) 참여하기 <span aria-hidden="true">↗</span>
               </a>
               <a
                 className="button button-secondary"
@@ -208,9 +215,10 @@ export default function Home() {
               <em>보호가 시작됩니다.</em>
             </h2>
             <p className="section-lede">
-              지켜줌인은 생명존중문화 확산을 위해 온라인 자살유발정보를
-              자발적으로 모니터링하는 자원봉사자입니다. 한 번의 관심을
-              실제 신고와 기록으로 이어 온라인 환경을 함께 지킵니다.
+              한국생명존중희망재단은 국민의 소중한 생명을 보호하고
+              생명존중문화를 조성하기 위해 자살예방체계를 구축·지원합니다.
+              지켜줌인은 그 공공적 역할을 시민의 일상 속 모니터링과 신고
+              행동으로 이어주는 참여 경로입니다.
             </p>
             <a
               className="text-link"
@@ -245,18 +253,48 @@ export default function Home() {
           <div className="section-heading">
             <div>
               <p className="eyebrow">
-                <span>02</span> 한국생명존중희망재단의 공공적 가치
+                <span>02</span> 한국생명존중희망재단의 역할과 공공적 가치
               </p>
               <h2 id="foundation-title">
-                관심을 참여로,
+                생명을 지키는 가치,
                 <br />
-                <em>참여를 안전망으로.</em>
+                <em>사회 전체의 행동으로.</em>
               </h2>
             </div>
             <p>
-              재단은 시민의 관심이 일회성 선의에 머물지 않도록 참여 기회와
-              교육, 공식 신고 시스템을 하나의 활동 경로로 연결합니다.
+              재단은 존중과 공감에서 출발해 협력과 전문성으로 자살예방체계를
+              운영합니다. 시민의 관심이 교육·모니터링·신고로 이어질 때
+              생명존중의 가치는 개인의 마음을 넘어 사회의 안전망이 됩니다.
             </p>
+          </div>
+
+          <div className="foundation-brief">
+            <div className="foundation-mission">
+              <p className="eyebrow">재단의 미션</p>
+              <p>자살예방 및 생명존중문화 조성으로 국민의 소중한 생명 보호</p>
+              <a
+                className="text-link"
+                href={MISSION_URL}
+                target="_blank"
+                rel="noreferrer"
+              >
+                공식 미션 확인하기 <span aria-hidden="true">↗</span>
+              </a>
+            </div>
+            <div className="foundation-roles">
+              <div>
+                <strong>인식 개선</strong>
+                <span>생명존중의 중요성을 알립니다.</span>
+              </div>
+              <div>
+                <strong>예방 서비스</strong>
+                <span>교육과 도움을 필요한 곳에 연결합니다.</span>
+              </div>
+              <div>
+                <strong>공적 체계</strong>
+                <span>근거와 협력으로 예방의 기반을 만듭니다.</span>
+              </div>
+            </div>
           </div>
 
           <div className="value-grid">
@@ -278,8 +316,8 @@ export default function Home() {
           <div className="value-summary">
             <span aria-hidden="true" />
             <p>
-              지켜줌인은 재단의 역할을 가장 가까운 시민 행동으로 경험하게
-              하는 참여 경로입니다.
+              존중·공감·협력·전문성은 선언에 머물지 않고, 시민의 관심을
+              실제 예방 행동으로 바꾸는 재단의 공공 인프라입니다.
             </p>
             <a
               className="text-link"
@@ -461,7 +499,7 @@ export default function Home() {
               target="_blank"
               rel="noreferrer"
             >
-              지켜줌인 활동 참여하기 <span aria-hidden="true">↗</span>
+              지켜줌인(人) 참여하기 <span aria-hidden="true">↗</span>
             </a>
             <a
               className="button button-outline-light"
@@ -523,7 +561,7 @@ export default function Home() {
         target="_blank"
         rel="noreferrer"
       >
-        지켜줌인 참여하기 <span aria-hidden="true">↗</span>
+        지켜줌인(人) 참여하기 <span aria-hidden="true">↗</span>
       </a>
     </main>
   );

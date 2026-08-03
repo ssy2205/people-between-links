@@ -32,10 +32,15 @@ test("server-renders the submission-ready People Between Links campaign", async 
   assert.match(html, /지켜보는 사람에서,[\s\S]*지켜주는 사람으로\./);
   assert.match(html, /관심이 닿는 순간,[\s\S]*보호가 시작됩니다\./);
   assert.match(html, /관심을 보호로 연결합니다/);
-  assert.match(html, /한국생명존중희망재단의 공공적 가치/);
-  assert.match(html, /참여의 문/);
-  assert.match(html, /교육된 실천/);
-  assert.match(html, /공적 신고 체계/);
+  assert.match(html, /한국생명존중희망재단의 역할과 공공적 가치/);
+  assert.match(html, /재단의 미션/);
+  assert.match(html, /존중/);
+  assert.match(html, /공감/);
+  assert.match(html, /협력/);
+  assert.match(html, /전문성/);
+  assert.match(html, /인식 개선/);
+  assert.match(html, /예방 서비스/);
+  assert.match(html, /공적 체계/);
   assert.match(html, /1365 회원가입/);
   assert.match(html, /SIMS 가입/);
   assert.match(html, /교육 후 활동/);
@@ -63,6 +68,7 @@ test("keeps metadata, fonts, artwork, and GitHub Pages source production-ready",
   assert.match(layout, /lang="ko"/);
   assert.match(page, /life-thread-oil-v2\.png/);
   assert.match(page, /kfsp-ci\.png/);
+  assert.match(page, /MISSION_URL/);
   assert.match(page, /line-d/);
   assert.match(css, /NanumGothic-Regular\.woff2/);
   assert.match(css, /\.node-four[\s\S]*color: var\(--paper\)/);
@@ -71,6 +77,7 @@ test("keeps metadata, fonts, artwork, and GitHub Pages source production-ready",
 
   await Promise.all([
     access(new URL("../public/campaign-banner-300.png", import.meta.url)),
+    access(new URL("../public/campaign-banner-approved.png", import.meta.url)),
     access(new URL("../public/kfsp-ci.png", import.meta.url)),
     access(new URL("../public/life-thread-oil-v2.png", import.meta.url)),
     access(new URL("../public/fonts/NanumGothic-Regular.ttf", import.meta.url)),

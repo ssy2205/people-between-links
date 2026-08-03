@@ -55,9 +55,16 @@ try {
   );
   // Chrome can create a blank overflow page when a custom-height PDF lands
   // exactly on a fractional layout boundary. The footer has breathing room,
-  // so trim a few CSS pixels from the canvas to keep this a true one-sheet
-  // long-scroll submission PDF.
-  const pdfHeight = Math.max(1, documentHeight - 8);
+  // so trim a small safety band from the canvas to keep this a true one-sheet
+  // long-scroll submission PDF. The footer itself has enough breathing room
+  // that this does not clip visible content.
+  const pdfHeight = Math.max(1, documentHeight - 64);
+  await page.addStyleTag({
+    content: `
+      html, body { height: ${pdfHeight}px !important; overflow: hidden !important; }
+      .site-shell { max-height: ${pdfHeight}px !important; overflow: hidden !important; }
+    `,
+  });
 
   await page.pdf({
     path: pdfOutput,

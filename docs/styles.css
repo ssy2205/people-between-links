@@ -587,9 +587,78 @@ h2 em {
   background: var(--paper);
 }
 
-.value-grid {
+.foundation-brief {
+  display: grid;
+  grid-template-columns: 0.9fr 1.5fr;
+  gap: 18px;
+  margin-bottom: 36px;
+}
+
+.foundation-mission {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 174px;
+  padding: 26px 28px;
+  background: var(--ink);
+  color: var(--paper);
+  box-shadow: 10px 11px 0 var(--yellow);
+}
+
+.foundation-mission .eyebrow {
+  margin: 0;
+  color: var(--yellow);
+}
+
+.foundation-mission > p:last-of-type {
+  max-width: 360px;
+  margin: 30px 0 0;
+  font-size: 21px;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.foundation-mission .text-link {
+  width: fit-content;
+  margin-top: 24px;
+  color: var(--yellow);
+}
+
+.foundation-roles {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  padding: 24px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.foundation-roles > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  padding: 0 22px;
+  border-left: 1px solid var(--line);
+}
+
+.foundation-roles > div:first-child {
+  border-left: 0;
+}
+
+.foundation-roles strong {
+  font-size: 18px;
+}
+
+.foundation-roles span {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.value-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   gap: 18px;
 }
 
@@ -615,6 +684,10 @@ h2 em {
 
 .value-card:nth-child(3):hover {
   box-shadow: 10px 11px 0 var(--coral);
+}
+
+.value-card:nth-child(4):hover {
+  box-shadow: 10px 11px 0 var(--yellow-deep);
 }
 
 .value-card-top {
@@ -1171,6 +1244,10 @@ h2 em {
     max-width: 620px;
   }
 
+  .value-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   .network-visual {
     width: min(590px, 100%);
     margin: 0 auto;
@@ -1337,6 +1414,32 @@ h2 em {
   .activity-grid,
   .value-grid {
     grid-template-columns: 1fr;
+  }
+
+  .foundation-brief {
+    grid-template-columns: 1fr;
+  }
+
+  .foundation-mission {
+    min-height: 0;
+  }
+
+  .foundation-roles {
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding: 0;
+  }
+
+  .foundation-roles > div,
+  .foundation-roles > div:first-child {
+    min-height: 100px;
+    padding: 18px 0;
+    border-top: 1px solid var(--line);
+    border-left: 0;
+  }
+
+  .foundation-roles > div:first-child {
+    border-top: 0;
   }
 
   .value-card {
