@@ -298,7 +298,7 @@ export default function Home() {
             </p>
             <a
               className="text-link"
-              href={ACTIVITY_GUIDE_URL}
+              href={MISSION_URL}
               target="_blank"
               rel="noreferrer"
             >

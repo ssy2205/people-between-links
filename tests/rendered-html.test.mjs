@@ -39,6 +39,10 @@ test("server-renders the submission-ready People Between Links campaign", async 
   assert.match(html, /협력/);
   assert.match(html, /전문성/);
   assert.doesNotMatch(html, /재단의 핵심가치/);
+  assert.match(
+    html,
+    /href="https:\/\/www\.kfsp\.or\.kr\/home\/kor\/contents\.do\?menuPos=95"[^>]*>공식 근거 확인하기/,
+  );
   assert.match(html, /인식 개선/);
   assert.match(html, /예방 서비스/);
   assert.match(html, /공적 체계/);
