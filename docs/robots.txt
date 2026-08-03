@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://ssy2205.github.io/people-between-links/sitemap.xml

@@ -40,3 +40,5 @@ next-env.d.ts
 /.wrangler/
 /outputs/
 /work/
+/docs/assets/fonts/*.ttf
+/public/*-source.png

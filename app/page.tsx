@@ -1,470 +1,532 @@
-"use client";
+/* eslint-disable @next/next/no-img-element -- The GitHub Pages export uses direct static assets without a Next image server. */
 
-import { useEffect, useMemo, useState } from "react";
-
-type BannerFormat = "square" | "tower";
-
-const OFFICIAL_CONTEST_URL = "https://inec.or.kr/board/detail/1411";
-const OFFICIAL_SUBMISSION_URL =
-  "https://docs.google.com/forms/d/e/1FAIpQLScGjt6biVGbIZaC9OKqkJP2biDVoEzMVgnh8sF52P68t_c5pw/viewform?usp=header";
+const ACTIVITY_GUIDE_URL =
+  "https://www.kfsp.or.kr/home/kor/contents.do?menuPos=2#none";
+const SIMS_URL = "https://sims.kfsp.or.kr/";
+const REPORT_URL = "https://sims.kfsp.or.kr/?pMENU_NO=265";
 const FOUNDATION_URL = "https://www.kfsp.or.kr/";
-const FOUNDATION_MISSION_URL =
-  "https://www.kfsp.or.kr/home/kor/contents.do?menuPos=95";
+const CONTEST_URL = "https://inec.or.kr/board/detail/1411";
 
-const routeSteps = [
+const joinSteps = [
   {
     number: "01",
-    title: "신호 알아차리기",
-    body: "혼자 추측하거나 단정하지 않고, 평소와 다른 신호를 차분히 살핍니다.",
+    title: "1365 회원가입",
+    body: "봉사활동 실적 연계를 위해 1365 자원봉사포털 계정을 준비합니다.",
     tone: "yellow",
   },
   {
     number: "02",
-    title: "지속적으로 관심 갖기",
-    body: "한 번의 안부를 만능 해답으로 만들지 않고, 곁을 지키는 관심을 이어갑니다.",
+    title: "SIMS 가입",
+    body: "미디어 자살정보 모니터링 시스템에 가입하고 활동 준비를 마칩니다.",
     tone: "blue",
   },
   {
     number: "03",
-    title: "전문 서비스로 연결하기",
-    body: "개인의 선의에서 멈추지 않고, 정확한 정보와 전문적인 도움으로 이어집니다.",
+    title: "교육 후 활동",
+    body: "사전교육을 이수한 뒤 온라인 모니터링과 신고 활동을 시작합니다.",
     tone: "coral",
   },
 ] as const;
 
-const foundationRoles = [
+const activityCards = [
+  {
+    number: "A",
+    title: "모니터링",
+    body: "SNS·포털·커뮤니티 등 온라인 공간의 자살유발·유해정보를 살펴봅니다.",
+  },
+  {
+    number: "B",
+    title: "게시물 신고",
+    body: "발견한 정보는 해당 매체의 신고 기능을 통해 조치 요청합니다.",
+  },
+  {
+    number: "C",
+    title: "SIMS 활동 입력",
+    body: "활동 내용을 미디어 자살정보 모니터링 시스템에 기록합니다.",
+  },
+] as const;
+
+const publicValues = [
   {
     index: "A",
-    eyebrow: "알아차릴 수 있도록",
-    title: "생명지킴이 교육",
-    body: "생명존중과 자살예방을 이해하고, 현장에서 필요한 역할을 익힐 수 있도록 교육을 개발하고 보급합니다.",
-    tag: "교육 · 역량",
+    eyebrow: "시민이 함께할 수 있도록",
+    title: "참여의 문",
+    body: "만 19세 이상 국민 누구나 생명존중문화 확산에 참여할 수 있는 시민 활동 경로를 엽니다.",
   },
   {
     index: "B",
-    eyebrow: "바르게 이해할 수 있도록",
-    title: "생명존중문화 조성",
-    body: "생명을 존중하는 언어와 문화를 넓히고, 정확한 정보가 사회에 닿도록 캠페인과 홍보를 이어갑니다.",
-    tag: "문화 · 정보",
+    eyebrow: "관심이 책임 있게 이어지도록",
+    title: "교육된 실천",
+    body: "1365·SIMS 가입과 사전교육을 거쳐 관심을 책임 있는 온라인 모니터링 활동으로 연결합니다.",
   },
   {
     index: "C",
-    eyebrow: "지역에서 이어지도록",
-    title: "지역기반 예방사업",
-    body: "지역사회가 스스로 예방 체계를 만들고 운영할 수 있도록 기획과 평가, 현장 사업을 지원합니다.",
-    tag: "지역 · 현장",
+    eyebrow: "발견이 공식 행동이 되도록",
+    title: "공적 신고 체계",
+    body: "게시물 신고와 활동 기록이 미디어 자살정보 모니터링 시스템 안에서 이어지게 합니다.",
   },
 ] as const;
 
-const checklist = [
-  {
-    id: "banner",
-    label: "300×250 배너 PNG",
-    detail: "실제 크기에서 [광고]·메인 카피·CTA를 한 번에 읽을 수 있는지 확인",
-  },
-  {
-    id: "landing",
-    label: "스크롤형 랜딩페이지",
-    detail: "배너의 관심—도움 연결이 랜딩의 6개 패널로 이어지는지 확인",
-  },
-  {
-    id: "brief",
-    label: "1페이지 광고기획서",
-    detail: "기획 의도와 작품 설명을 한 페이지에 정리하고 공식 표기만 최종 반영",
-  },
-  {
-    id: "rights",
-    label: "권리·표기 확인",
-    detail: "로고·기관명·외부 링크는 승인본으로 교체하고, 광고 표시를 유지",
-  },
-  {
-    id: "submit",
-    label: "공식 접수",
-    detail: "공식 공모전 페이지의 최신 구글폼과 제출 안내를 최종 확인",
-  },
-] as const;
-
-function drawRoundedRect(
-  context: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-  radius: number,
-) {
-  context.beginPath();
-  context.roundRect(x, y, width, height, radius);
-}
-
-function drawImageCover(
-  context: CanvasRenderingContext2D,
-  image: ImageBitmap,
-  width: number,
-  height: number,
-) {
-  const targetRatio = width / height;
-  const imageRatio = image.width / image.height;
-  let sourceX = 0;
-  let sourceY = 0;
-  let sourceWidth = image.width;
-  let sourceHeight = image.height;
-
-  if (imageRatio > targetRatio) {
-    sourceWidth = image.height * targetRatio;
-    sourceX = (image.width - sourceWidth) / 2;
-  } else {
-    sourceHeight = image.width / targetRatio;
-    sourceY = (image.height - sourceHeight) / 2;
-  }
-
-  context.drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, width, height);
-}
-
-async function drawBanner(format: BannerFormat) {
-  const width = format === "square" ? 300 : 160;
-  const height = format === "square" ? 250 : 600;
-  const scale = 2;
-  const canvas = document.createElement("canvas");
-  canvas.width = width * scale;
-  canvas.height = height * scale;
-  const context = canvas.getContext("2d");
-
-  if (!context) return;
-  context.scale(scale, scale);
-  context.fillStyle = "#f8f2e8";
-  context.fillRect(0, 0, width, height);
-
-  try {
-    const response = await fetch("/life-thread-oil-v2.png");
-    if (response.ok) {
-      const image = await createImageBitmap(await response.blob());
-      context.save();
-      context.globalAlpha = format === "square" ? 0.62 : 0.54;
-      if (format === "square") {
-        drawImageCover(context, image, width, height);
-      } else {
-        context.drawImage(image, 0, 0, image.width, image.height, 0, 68, width, width);
-      }
-      context.restore();
-      image.close();
-    }
-  } catch {
-    // The designed cream base remains usable if the optional background cannot load.
-  }
-
-  context.fillStyle = format === "square" ? "rgba(248,242,232,.38)" : "rgba(248,242,232,.24)";
-  context.fillRect(0, 0, width, height);
-
-  const pad = format === "square" ? 18 : 14;
-  const small = format === "square" ? 10 : 9;
-  const title = format === "square" ? 20 : 25;
-  const lineY = format === "square" ? 111 : 310;
-
-  context.fillStyle = "#15233f";
-  context.font = `700 ${small}px Arial, sans-serif`;
-  context.fillText("[광고]", pad, pad + 2);
-
-  context.fillStyle = "#15233f";
-  context.textAlign = "right";
-  context.font = `700 ${format === "square" ? 7 : 6}px Arial, sans-serif`;
-  context.fillText("한국생명존중", width - pad, pad - 2);
-  context.fillText("희망재단", width - pad, pad + 7);
-  context.textAlign = "left";
-
-  const cardWidth = format === "square" ? 82 : width - pad * 2;
-  const cardHeight = format === "square" ? 47 : 48;
-  const leftX = format === "square" ? pad : pad;
-  const rightX = format === "square" ? width - pad - cardWidth : pad;
-  const cardY = format === "square" ? 52 : 94;
-  const helpY = format === "square" ? cardY : 188;
-
-  context.save();
-  context.strokeStyle = "#e7b82f";
-  context.lineWidth = format === "square" ? 4 : 5;
-  context.lineCap = "round";
-  context.shadowColor = "rgba(21,35,63,.28)";
-  context.shadowBlur = 3;
-  context.beginPath();
-  if (format === "square") {
-    context.moveTo(leftX + cardWidth, cardY + cardHeight / 2);
-    context.bezierCurveTo(
-      width / 2 - 15,
-      cardY - 3,
-      width / 2 + 15,
-      cardY + cardHeight + 3,
-      rightX,
-      helpY + cardHeight / 2,
-    );
-  } else {
-    context.moveTo(width / 2, cardY + cardHeight);
-    context.bezierCurveTo(
-      width / 2 - 17,
-      cardY + cardHeight + 28,
-      width / 2 + 17,
-      helpY - 28,
-      width / 2,
-      helpY,
-    );
-  }
-  context.stroke();
-  context.shadowBlur = 0;
-  context.strokeStyle = "rgba(255,241,157,.9)";
-  context.lineWidth = 1;
-  context.stroke();
-  context.restore();
-
-  context.lineWidth = 1.8;
-  context.strokeStyle = "#15233f";
-  context.fillStyle = "rgba(255,253,248,.94)";
-  drawRoundedRect(context, leftX, cardY, cardWidth, cardHeight, 12);
-  context.fill();
-  context.stroke();
-  drawRoundedRect(context, rightX, helpY, cardWidth, cardHeight, 12);
-  context.fill();
-  context.stroke();
-
-  context.fillStyle = "#15233f";
-  context.font = `700 ${format === "square" ? 16 : 14}px Arial, sans-serif`;
-  context.fillText("관심", leftX + 26, cardY + 30);
-  if (format === "square") {
-    context.fillText("도움", rightX + 26, helpY + 30);
-  } else {
-    context.fillText("도움", rightX + 50, helpY + 30);
-  }
-
-  context.fillStyle = "#15233f";
-  context.font = `700 ${title}px Arial, sans-serif`;
-  if (format === "square") {
-    context.fillText("도움은", pad, lineY + 20);
-    context.fillText("연결될 때", pad, lineY + 43);
-    context.fillText("가까워집니다.", pad, lineY + 66);
-  } else {
-    context.fillText("도움은", pad, lineY + 26);
-    context.fillText("연결될 때", pad, lineY + 58);
-    context.fillText("가까워집니다.", pad, lineY + 90);
-  }
-
-  context.fillStyle = "#d7b34d";
-  drawRoundedRect(
-    context,
-    pad,
-    height - (format === "square" ? 44 : 76),
-    width - pad * 2,
-    format === "square" ? 26 : 34,
-    13,
-  );
-  context.fill();
-  context.fillStyle = "#15233f";
-  context.font = `700 ${format === "square" ? 10 : 9}px Arial, sans-serif`;
-  context.fillText(
-    "생명존중의 연결망 보기 →",
-    pad + (format === "square" ? 23 : 13),
-    height - (format === "square" ? 27 : 54),
-  );
-
-  const link = document.createElement("a");
-  link.download = `사람-사이의-링크-${width}x${height}.png`;
-  link.href = canvas.toDataURL("image/png");
-  link.click();
-}
-
-export default function LifeRespectPage() {
-  const [format, setFormat] = useState<BannerFormat>("square");
-  const [completed, setCompleted] = useState<string[]>([]);
-  const [notice, setNotice] = useState("");
-
-  useEffect(() => {
-    const observed = Array.from(document.querySelectorAll("[data-reveal]"));
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-visible");
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.12 },
-    );
-    observed.forEach((element) => observer.observe(element));
-    return () => observer.disconnect();
-  }, []);
-
-  const progress = useMemo(
-    () => Math.round((completed.length / checklist.length) * 100),
-    [completed.length],
-  );
-
-  function toggleChecklist(id: string) {
-    setCompleted((current) =>
-      current.includes(id)
-        ? current.filter((item) => item !== id)
-        : [...current, id],
-    );
-  }
-
-  function announce(message: string) {
-    setNotice(message);
-    window.setTimeout(() => setNotice(""), 2600);
-  }
-
+export default function Home() {
   return (
     <main className="site-shell">
-      <div className="topline" aria-label="공모전 상태">
-        <div className="container topline-inner">
-          <span className="topline-dot" aria-hidden="true" />
-          <span>2026 전국 대학생 생명존중 광고공모전</span>
-          <span className="topline-separator">·</span>
-          <strong>접수 진행 중</strong>
-          <span className="topline-end">마감 08.10 18:00</span>
+      <a className="skip-link" href="#main-content">
+        본문 바로가기
+      </a>
+
+      <div className="campaign-bar" aria-label="캠페인 안내">
+        <div className="container campaign-bar-inner">
+          <span className="campaign-dot" aria-hidden="true" />
+          <span>한국생명존중희망재단 가치 확산 캠페인</span>
+          <span className="campaign-bar-note">관심을 신고와 참여로 연결합니다</span>
         </div>
       </div>
 
-      <nav className="nav container" aria-label="페이지 탐색">
-        <a className="brand" href="#top" aria-label="사람 사이의 링크 처음으로">
-          <span className="brand-mark" aria-hidden="true">
-            <span />
-            <span />
-          </span>
-          <span>사람 사이의 링크</span>
-        </a>
-        <div className="nav-links">
-          <a href="#why">캠페인</a>
-          <a href="#roles">재단의 역할</a>
-          <a href="#submit">제출 준비</a>
-        </div>
-        <a className="nav-cta" href="#banner">
-          배너 보기 <span aria-hidden="true">↘</span>
-        </a>
-      </nav>
+      <header className="site-header">
+        <nav className="container nav" aria-label="주요 메뉴">
+          <a
+            className="foundation-brand"
+            href={FOUNDATION_URL}
+            target="_blank"
+            rel="noreferrer"
+            aria-label="한국생명존중희망재단 공식 사이트 새 창 열기"
+          >
+            <img src="/kfsp-ci.png" alt="한국생명존중희망재단" />
+          </a>
+          <div className="nav-links">
+            <a href="#about">지켜줌인이란</a>
+            <a href="#foundation">재단의 역할</a>
+            <a href="#join">참여 방법</a>
+          </div>
+          <a
+            className="nav-cta"
+            href={REPORT_URL}
+            target="_blank"
+            rel="noreferrer"
+          >
+            자살유발정보 신고하기 <span aria-hidden="true">↗</span>
+          </a>
+        </nav>
+      </header>
 
-      <section className="hero" id="top">
+      <section className="hero" id="main-content" aria-labelledby="hero-title">
         <div className="hero-wash" aria-hidden="true" />
         <div className="container hero-grid">
-          <div className="hero-copy" data-reveal>
-            <p className="eyebrow"><span>02</span> 한국생명존중희망재단 가치 확산 광고</p>
-            <h1>
-              도움은
+          <div className="hero-copy">
+            <p className="eyebrow">
+              <span>LINK 01</span> 사람 사이의 링크
+            </p>
+            <h1 id="hero-title">
+              지나치지 않는
               <br />
-              <em>연결될 때</em>
+              사람,
               <br />
-              가까워집니다.
+              <em>지켜줌인.</em>
             </h1>
             <p className="hero-lede">
-              관심은 출발점입니다. 그 관심이 교육과 정확한 정보, 지역의
-              전문적인 지원으로 이어질 때 도움은 비로소 가까워집니다.
+              온라인에서 마주친 자살유발정보를 보고 지나치지 않는 사람.
+              모니터링과 신고로 생명존중의 연결망을 넓혀 주세요.
             </p>
             <div className="hero-actions">
-              <a className="button button-primary" href="#why">
-                연결의 흐름 보기 <span aria-hidden="true">↓</span>
+              <a
+                className="button button-primary"
+                href={ACTIVITY_GUIDE_URL}
+                target="_blank"
+                rel="noreferrer"
+              >
+                지켜줌인 활동 참여하기 <span aria-hidden="true">↗</span>
               </a>
-              <a className="button button-quiet" href={OFFICIAL_CONTEST_URL} target="_blank" rel="noreferrer">
-                공식 공모전 안내 <span aria-hidden="true">↗</span>
+              <a
+                className="button button-secondary"
+                href={REPORT_URL}
+                target="_blank"
+                rel="noreferrer"
+              >
+                바로 신고하기 <span aria-hidden="true">→</span>
               </a>
             </div>
-            <div className="hero-note">
-              <span className="note-line" aria-hidden="true" />
-              캠페인 본편 그래픽은 한글·기관명·CTA를 직접 조판해 편집 가능하게 설계했습니다.
-            </div>
+            <p className="hero-micro">
+              만 19세 이상 국민 누구나 참여할 수 있습니다.
+            </p>
           </div>
 
-          <div className="hero-art" data-reveal aria-label="관심과 도움을 실제 노란 실로 잇는 유화 그래픽">
-            <div className="art-meta"><span>[광고]</span><span>LINK / 01</span></div>
-            <div className="art-stage">
-              <div className="art-card art-card-interest"><span className="card-kicker">START</span><strong>관심</strong><span>한 번 더 묻는 일</span></div>
-              <div className="thread-thread" aria-hidden="true"><i /><i /><i /></div>
-              <div className="art-card art-card-help"><span className="card-kicker">NEXT</span><strong>도움</strong><span>사회가 이어 주는 곳</span></div>
-              <div className="art-caption"><span>사람</span><span>사이의</span><span>링크</span></div>
+          <div
+            className="hero-visual"
+            role="img"
+            aria-label="두 손 사이의 금빛 실이 관심과 신고를 연결하는 캠페인 이미지"
+          >
+            <img
+              className="hero-visual-image"
+              src="/life-thread-oil-v2.png"
+              alt=""
+            />
+            <div className="hero-visual-shade" aria-hidden="true" />
+            <span className="visual-chip">사람 사이의 링크</span>
+            <div className="visual-node visual-node-left">
+              <small>발견한 순간</small>
+              <strong>관심</strong>
             </div>
-            <div className="art-foot"><span>관심은 출발점</span><span>도움은 연결될 때 가까워집니다.</span></div>
+            <span className="visual-thread" aria-hidden="true" />
+            <div className="visual-node visual-node-right">
+              <small>이어지는 행동</small>
+              <strong>신고</strong>
+            </div>
+            <p className="visual-caption">
+              보고,
+              <br />
+              연결하고,
+              <br />
+              지키는 일.
+            </p>
           </div>
         </div>
-        <a className="scroll-cue" href="#why"><span>scroll to connect</span><i aria-hidden="true" /></a>
-      </section>
 
-      <section className="intro section" id="why">
-        <div className="container intro-grid">
-          <div className="section-index" data-reveal><span>01</span><i /></div>
-          <div data-reveal>
-            <p className="eyebrow">개인의 관심에서 사회의 안전망으로</p>
-            <h2>한 번 더 묻는 일은<br /><em>시작</em>입니다.</h2>
-            <p className="section-lede">하지만 한 사람의 선의만으로는 충분하지 않습니다. 관심이 신호를 알아차리는 교육, 바르게 이해하는 정보, 지역에서 이어지는 예방사업으로 연결될 때 혼자 감당하지 않아도 되는 사회에 가까워집니다.</p>
+        <div className="container fact-bar" aria-label="지켜줌인 참여 핵심 정보">
+          <div>
+            <span>참여 대상</span>
+            <strong>만 19세 이상 누구나</strong>
           </div>
-          <div className="pull-quote" data-reveal>
-            <span className="quote-mark">“</span>
-            <p>도움은<br /><strong>연결될 때 가까워집니다.</strong></p>
-            <span className="quote-rule" />
-            <small>사람과 사람 사이, 관심과 도움 사이를 잇는 한 줄</small>
+          <div>
+            <span>활동 공간</span>
+            <strong>온라인 전반</strong>
+          </div>
+          <div>
+            <span>활동 시작</span>
+            <strong>1365 회원가입</strong>
           </div>
         </div>
       </section>
 
-      <section className="route section section-dark" aria-labelledby="route-heading">
+      <section className="about section" id="about" aria-labelledby="about-title">
+        <div className="container about-grid">
+          <div className="section-number" aria-hidden="true">
+            01
+          </div>
+          <div className="about-copy">
+            <p className="eyebrow">지켜줌인(人)이란?</p>
+            <h2 id="about-title">
+              발견한 순간,
+              <br />
+              <em>연결은 시작됩니다.</em>
+            </h2>
+            <p className="section-lede">
+              지켜줌인은 생명존중문화 확산을 위해 온라인 자살유발정보를
+              자발적으로 모니터링하는 자원봉사자입니다. 한 번의 관심을
+              실제 신고와 기록으로 이어 온라인 환경을 함께 지킵니다.
+            </p>
+            <a
+              className="text-link"
+              href={ACTIVITY_GUIDE_URL}
+              target="_blank"
+              rel="noreferrer"
+            >
+              재단 공식 활동 안내 확인하기 <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+          <aside className="quote-card" aria-label="캠페인 핵심 문장">
+            <span className="quote-mark" aria-hidden="true">
+              “
+            </span>
+            <p>
+              지나치지 않은 관심을,
+              <br />
+              <strong>지켜내는 행동으로.</strong>
+            </p>
+            <span className="quote-rule" aria-hidden="true" />
+            <small>관심에서 신고까지, 사람 사이의 링크</small>
+          </aside>
+        </div>
+      </section>
+
+      <section
+        className="public-value section"
+        id="foundation"
+        aria-labelledby="foundation-title"
+      >
         <div className="container">
-          <div className="section-header" data-reveal>
-            <div><p className="eyebrow eyebrow-light"><span>02</span> 연결이 이어지는 방식</p><h2 id="route-heading">한 가닥의 실은<br /><em>세 번</em> 이어집니다.</h2></div>
-            <p className="section-side-copy">관심을 개인의 책임으로 남겨 두지 않고, 교육·정보·현장으로 확장하는 흐름을 한 줄의 실로 표현했습니다.</p>
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">
+                <span>02</span> 한국생명존중희망재단의 공공적 가치
+              </p>
+              <h2 id="foundation-title">
+                관심을 참여로,
+                <br />
+                <em>참여를 안전망으로.</em>
+              </h2>
+            </div>
+            <p>
+              재단은 시민의 관심이 일회성 선의에 머물지 않도록 참여 기회와
+              교육, 공식 신고 시스템을 하나의 활동 경로로 연결합니다.
+            </p>
           </div>
-          <div className="route-line" aria-hidden="true" />
-          <div className="route-grid">
-            {routeSteps.map((step) => (
-              <article className="route-card" key={step.number} data-reveal>
-                <span className={`route-number ${step.tone}`}>{step.number}</span>
+
+          <div className="value-grid">
+            {publicValues.map((value) => (
+              <article className="value-card" key={value.index}>
+                <div className="value-card-top">
+                  <span>{value.index}</span>
+                  <i aria-hidden="true" />
+                </div>
+                <div>
+                  <p>{value.eyebrow}</p>
+                  <h3>{value.title}</h3>
+                  <p>{value.body}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <div className="value-summary">
+            <span aria-hidden="true" />
+            <p>
+              지켜줌인은 재단의 역할을 가장 가까운 시민 행동으로 경험하게
+              하는 참여 경로입니다.
+            </p>
+            <a
+              className="text-link"
+              href={ACTIVITY_GUIDE_URL}
+              target="_blank"
+              rel="noreferrer"
+            >
+              공식 근거 확인하기 <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section className="join section section-dark" id="join" aria-labelledby="join-title">
+        <div className="container">
+          <div className="section-heading section-heading-light">
+            <div>
+              <p className="eyebrow eyebrow-light">
+                <span>03</span> 참여 방법
+              </p>
+              <h2 id="join-title">
+                관심이 행동이 되는
+                <br />
+                <em>세 단계.</em>
+              </h2>
+            </div>
+            <p>
+              공식 안내에 따라 계정을 준비하고 사전교육을 마치면,
+              온라인 모니터링과 신고 활동을 시작할 수 있습니다.
+            </p>
+          </div>
+
+          <div className="step-line" aria-hidden="true" />
+          <div className="step-grid">
+            {joinSteps.map((step) => (
+              <article className="step-card" key={step.number}>
+                <span className={`step-number ${step.tone}`}>{step.number}</span>
                 <h3>{step.title}</h3>
                 <p>{step.body}</p>
-                <span className="route-arrow" aria-hidden="true">↗</span>
               </article>
             ))}
+          </div>
+
+          <div className="join-action">
+            <p>
+              준비되셨나요? 정확한 가입 절차와 최신 활동 조건은 재단 공식
+              안내에서 확인하세요.
+            </p>
+            <a
+              className="button button-primary"
+              href={ACTIVITY_GUIDE_URL}
+              target="_blank"
+              rel="noreferrer"
+            >
+              지켜줌인 활동 안내 보기 <span aria-hidden="true">↗</span>
+            </a>
           </div>
         </div>
       </section>
 
-      <section className="roles section" id="roles" aria-labelledby="roles-heading">
+      <section
+        className="activity section"
+        id="activity"
+        aria-labelledby="activity-title"
+      >
         <div className="container">
-          <div className="section-header roles-heading" data-reveal>
-            <div><p className="eyebrow"><span>03</span> 한국생명존중희망재단</p><h2 id="roles-heading">관심이 멈추지 않게<br /><em>사회가 할 일</em>을 만듭니다.</h2></div>
-            <a className="text-link" href={FOUNDATION_MISSION_URL} target="_blank" rel="noreferrer">재단 미션 확인하기 <span aria-hidden="true">↗</span></a>
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">
+                <span>04</span> 활동 내용
+              </p>
+              <h2 id="activity-title">
+                보고, 신고하고,
+                <br />
+                <em>기록합니다.</em>
+              </h2>
+            </div>
+            <p>
+              복잡한 설명보다 실제 활동을 한눈에 이해할 수 있도록 공식
+              안내의 핵심만 세 가지로 정리했습니다.
+            </p>
           </div>
-          <div className="roles-grid">
-            {foundationRoles.map((role) => (
-              <article className="role-card" key={role.index} data-reveal>
-                <div className="role-card-top"><span className="role-index">{role.index}</span><span className="role-tag">{role.tag}</span></div>
-                <div><p className="role-eyebrow">{role.eyebrow}</p><h3>{role.title}</h3><p className="role-body">{role.body}</p></div>
-                <span className="role-link" aria-hidden="true">↗</span>
+
+          <div className="activity-grid">
+            {activityCards.map((card) => (
+              <article className="activity-card" key={card.number}>
+                <span>{card.number}</span>
+                <h3>{card.title}</h3>
+                <p>{card.body}</p>
               </article>
             ))}
           </div>
-          <div className="roles-foot" data-reveal><span className="roles-foot-line" /><p>한국생명존중희망재단은 국민의 소중한 생명을 보호하고 생명존중문화를 조성하기 위해 자살예방체계 구축·운영 지원, 자살예방 교육·홍보, 지역사회 사업 등을 수행합니다.</p></div>
+
+          <div className="report-panel">
+            <div>
+              <p className="report-kicker">이미 신고할 정보가 있나요?</p>
+              <h3>지금, 공식 신고 화면으로 연결합니다.</h3>
+              <p>
+                신고 접수와 확인은 한국생명존중희망재단의 미디어 자살정보
+                모니터링 시스템에서 진행됩니다.
+              </p>
+            </div>
+            <a
+              className="button button-light"
+              href={REPORT_URL}
+              target="_blank"
+              rel="noreferrer"
+            >
+              자살유발정보 신고하기 <span aria-hidden="true">↗</span>
+            </a>
+          </div>
         </div>
       </section>
 
-      <section className="network section section-yellow" aria-labelledby="network-heading">
+      <section className="network section section-yellow" aria-labelledby="network-title">
         <div className="container network-grid">
-          <div className="network-copy" data-reveal><p className="eyebrow"><span>04</span> 연결망의 확장</p><h2 id="network-heading">한 사람이 혼자<br /><em>감당하지 않도록.</em></h2><p>마음의 상태를 한 번의 행동으로 단정하지 않습니다. 대신 사람과 정보, 교육과 현장을 이어 두어 도움이 필요한 순간에 다음 연결이 존재하도록 만듭니다.</p><a className="button button-dark" href={FOUNDATION_URL} target="_blank" rel="noreferrer">재단 공식 사이트 <span aria-hidden="true">↗</span></a></div>
-          <div className="network-visual" data-reveal aria-hidden="true"><div className="network-ring ring-one" /><div className="network-ring ring-two" /><div className="network-ring ring-three" /><span className="network-node node-one">관심</span><span className="network-node node-two">교육</span><span className="network-node node-three">정보</span><span className="network-node node-four">현장</span><span className="network-center">도움</span><div className="network-thread thread-a" /><div className="network-thread thread-b" /><div className="network-thread thread-c" /></div>
+          <div className="network-copy">
+            <p className="eyebrow">
+              <span>05</span> 연결망의 확장
+            </p>
+            <h2 id="network-title">
+              한 사람의 관심이
+              <br />
+              <em>혼자 남지 않도록.</em>
+            </h2>
+            <p>
+              지켜줌인은 개인의 관심을 교육과 정보, 현장의 실천으로 잇는
+              재단의 참여 경로입니다. 연결된 행동이 생명존중문화를
+              넓힙니다.
+            </p>
+            <a
+              className="button button-dark"
+              href={SIMS_URL}
+              target="_blank"
+              rel="noreferrer"
+            >
+              SIMS에서 활동 시작하기 <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+
+          <div
+            className="network-visual"
+            role="img"
+            aria-label="관심, 교육, 정보, 현장이 모두 도움으로 연결된 생명존중 연결망"
+          >
+            <span className="network-ring ring-one" aria-hidden="true" />
+            <span className="network-ring ring-two" aria-hidden="true" />
+            <span className="network-ring ring-three" aria-hidden="true" />
+            <span className="network-line line-a" aria-hidden="true" />
+            <span className="network-line line-b" aria-hidden="true" />
+            <span className="network-line line-c" aria-hidden="true" />
+            <span className="network-line line-d" aria-hidden="true" />
+            <span className="network-node node-one">관심</span>
+            <span className="network-node node-two">교육</span>
+            <span className="network-node node-three">정보</span>
+            <span className="network-node node-four">현장</span>
+            <span className="network-center">도움</span>
+          </div>
         </div>
       </section>
 
-      <section className="banner-section section" id="banner" aria-labelledby="banner-heading">
-        <div className="container banner-grid">
-          <div className="banner-copy" data-reveal><p className="eyebrow"><span>05</span> 실제 광고 시안</p><h2 id="banner-heading">작은 배너에도<br /><em>연결은 보이게.</em></h2><p>300×250 한 칸 안에서 광고 표기, 관심과 도움, 메인 카피, 랜딩 CTA가 바로 읽히도록 압축했습니다. 유화 속 금빛 실과 카드 사이의 실제 줄이 같은 연결을 두 겹으로 보여 줍니다.</p><div className="format-switch" role="group" aria-label="배너 규격 선택"><button className={format === "square" ? "active" : ""} onClick={() => setFormat("square")} type="button">300 × 250</button><button className={format === "tower" ? "active" : ""} onClick={() => setFormat("tower")} type="button">160 × 600</button></div><button className="button button-primary download-button" type="button" onClick={async () => { await drawBanner(format); announce("배너 PNG 다운로드를 시작했습니다."); }}>현재 규격 PNG 다운로드 <span aria-hidden="true">↓</span></button><p className="micro-note">※ 기관 로고는 주최 측 승인본을 받는 즉시 교체합니다.</p></div>
-          <div className="banner-display" data-reveal><div className={`banner-frame ${format}`}><div className="banner-label">[광고]</div><div className="banner-logo-placeholder" aria-label="한국생명존중희망재단 표기">한국생명존중<br />희망재단</div><div className="banner-cards"><div className="mini-card">관심</div><span className="mini-thread" aria-hidden="true" /><div className="mini-card">도움</div></div><h3>도움은<br /><strong>연결될 때</strong><br />가까워집니다.</h3><button type="button" onClick={() => document.getElementById("why")?.scrollIntoView({ behavior: "smooth" })}>생명존중의 연결망 보기 <span aria-hidden="true">→</span></button></div><div className="banner-size-note"><span>LIVE MOCKUP</span><span>{format === "square" ? "300 × 250 px" : "160 × 600 px"}</span></div></div>
-        </div>
-      </section>
-
-      <section className="submit section section-paper" id="submit" aria-labelledby="submit-heading">
-        <div className="container submit-grid">
-          <div data-reveal><p className="eyebrow"><span>06</span> 나중에 할 일은 여기만 확인</p><h2 id="submit-heading">제작은 끝났고,<br /><em>확인만 남았습니다.</em></h2><p className="section-lede">페이지와 배너는 지금 바로 사용할 수 있게 구성했습니다. 제출 직전에 아래 항목을 체크하고, 공식 공고의 최신 양식·기관 표기·링크만 반영하면 됩니다.</p><div className="progress-card"><div className="progress-head"><span>제출 준비도</span><strong>{progress}%</strong></div><div className="progress-track"><span style={{ width: `${progress}%` }} /></div><small>{completed.length} / {checklist.length} 항목 완료</small></div></div>
-          <div className="checklist" data-reveal>{checklist.map((item) => { const isDone = completed.includes(item.id); return <button key={item.id} type="button" className={`check-row ${isDone ? "done" : ""}`} onClick={() => toggleChecklist(item.id)} aria-pressed={isDone}><span className="check-box" aria-hidden="true">{isDone ? "✓" : ""}</span><span className="check-copy"><strong>{item.label}</strong><small>{item.detail}</small></span><span className="check-arrow" aria-hidden="true">↗</span></button>; })}<div className="check-actions"><a className="button button-dark" href={OFFICIAL_SUBMISSION_URL} target="_blank" rel="noreferrer">공식 접수 폼 열기 <span aria-hidden="true">↗</span></a><a className="text-link" href={OFFICIAL_CONTEST_URL} target="_blank" rel="noreferrer">공모요강 보기 <span aria-hidden="true">↗</span></a><a className="text-link" href="#top">처음으로 <span aria-hidden="true">↑</span></a></div></div>
+      <section className="final-cta section" aria-labelledby="final-title">
+        <div className="container final-cta-inner">
+          <div>
+            <p className="eyebrow eyebrow-light">사람 사이의 링크</p>
+            <h2 id="final-title">
+              지켜보는 사람에서,
+              <br />
+              <em>지켜주는 사람으로.</em>
+            </h2>
+            <p>
+              당신의 관심을 지켜줌인 활동과 신고로 연결해 주세요.
+            </p>
+          </div>
+          <div className="final-actions">
+            <a
+              className="button button-primary"
+              href={ACTIVITY_GUIDE_URL}
+              target="_blank"
+              rel="noreferrer"
+            >
+              지켜줌인 활동 참여하기 <span aria-hidden="true">↗</span>
+            </a>
+            <a
+              className="button button-outline-light"
+              href={REPORT_URL}
+              target="_blank"
+              rel="noreferrer"
+            >
+              자살유발정보 신고하기 <span aria-hidden="true">↗</span>
+            </a>
+          </div>
         </div>
       </section>
 
       <footer className="footer">
-        <div className="container footer-grid"><div><a className="brand footer-brand" href="#top"><span className="brand-mark" aria-hidden="true"><span /><span /></span><span>사람 사이의 링크</span></a><p>2026 전국 대학생 생명존중 광고공모전<br />한국생명존중희망재단 가치 확산 광고 부문</p></div><div className="footer-links"><a href={OFFICIAL_SUBMISSION_URL} target="_blank" rel="noreferrer">공식 접수 폼 ↗</a><a href={OFFICIAL_CONTEST_URL} target="_blank" rel="noreferrer">공식 공모전 안내 ↗</a><a href={FOUNDATION_URL} target="_blank" rel="noreferrer">재단 공식 사이트 ↗</a><span>캠페인 시안 · 2026</span></div></div>
-        <div className="container footer-bottom"><span>도움은 연결될 때 가까워집니다.</span><span>기관 로고·공식 연결 정보는 승인본으로 최종 교체</span></div>
+        <div className="container footer-main">
+          <div>
+            <a
+              className="footer-logo"
+              href={FOUNDATION_URL}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <img src="/kfsp-ci.png" alt="한국생명존중희망재단" />
+            </a>
+            <p>
+              본 페이지는 2026 전국 대학생 생명존중 광고공모전 출품을 위해
+              제작된 공익 캠페인 랜딩페이지입니다. 참여와 신고는 공식
+              사이트에서 진행됩니다.
+            </p>
+          </div>
+          <div className="footer-links">
+            <a href={ACTIVITY_GUIDE_URL} target="_blank" rel="noreferrer">
+              지켜줌인 활동 안내 ↗
+            </a>
+            <a href={REPORT_URL} target="_blank" rel="noreferrer">
+              자살유발정보 신고 ↗
+            </a>
+            <a href={FOUNDATION_URL} target="_blank" rel="noreferrer">
+              재단 공식 사이트 ↗
+            </a>
+            <a href={CONTEST_URL} target="_blank" rel="noreferrer">
+              공모전 안내 ↗
+            </a>
+          </div>
+        </div>
+        <div className="container support-note">
+          <span>지금 마음이 힘들거나 즉각적인 도움이 필요하다면</span>
+          <a href="tel:109">24시간 자살예방상담전화 109</a>
+        </div>
+        <div className="container footer-bottom">
+          <span>사람 사이의 링크 · 2026</span>
+          <span>도움은 연결될 때 가까워집니다.</span>
+        </div>
       </footer>
 
-      <div className="sr-only" aria-live="polite">{notice}</div>
+      <a
+        className="mobile-cta"
+        href={ACTIVITY_GUIDE_URL}
+        target="_blank"
+        rel="noreferrer"
+      >
+        지켜줌인 참여하기 <span aria-hidden="true">↗</span>
+      </a>
     </main>
   );
 }
