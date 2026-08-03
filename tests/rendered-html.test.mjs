@@ -29,7 +29,9 @@ test("server-renders the submission-ready People Between Links campaign", async 
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /지나치지 않는.*사람,.*지켜줌인/);
+  assert.match(html, /지켜보는 사람에서,[\s\S]*지켜주는 사람으로\./);
+  assert.match(html, /관심이 닿는 순간,[\s\S]*보호가 시작됩니다\./);
+  assert.match(html, /관심을 보호로 연결합니다/);
   assert.match(html, /한국생명존중희망재단의 공공적 가치/);
   assert.match(html, /참여의 문/);
   assert.match(html, /교육된 실천/);

@@ -60,19 +60,18 @@ def build_banner() -> Image.Image:
     logo.thumbnail((108, 44), Image.Resampling.LANCZOS)
     canvas.alpha_composite(logo, (WIDTH - logo.width - 10, 5))
 
-    draw.text((12, 42), "지나치지 않는", font=font(28, extra_bold=True), fill=NAVY)
-    draw.text((12, 76), "사람,", font=font(34, extra_bold=True), fill=NAVY)
-    draw.rounded_rectangle((10, 117, 153, 157), radius=5, fill=YELLOW)
+    draw.text((12, 43), "지켜보는 사람에서,", font=font(20, extra_bold=True), fill=NAVY)
+    draw.rounded_rectangle((10, 78, 236, 119), radius=5, fill=YELLOW)
     draw.text(
-        (17, 116),
-        "지켜줌인",
-        font=font(36, extra_bold=True),
+        (16, 79),
+        "지켜주는 사람으로.",
+        font=font(23, extra_bold=True),
         fill=NAVY,
     )
     draw.text(
-        (13, 171),
-        "온라인 자살유발정보 모니터링단",
-        font=font(10),
+        (13, 143),
+        "관심을 보호로 연결하는 지켜줌인",
+        font=font(9),
         fill=NAVY,
     )
 

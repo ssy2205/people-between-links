@@ -78,7 +78,7 @@ export default function Home() {
         <div className="container campaign-bar-inner">
           <span className="campaign-dot" aria-hidden="true" />
           <span>한국생명존중희망재단 가치 확산 캠페인</span>
-          <span className="campaign-bar-note">관심을 신고와 참여로 연결합니다</span>
+          <span className="campaign-bar-note">관심을 보호로 연결합니다</span>
         </div>
       </div>
 
@@ -117,15 +117,13 @@ export default function Home() {
               <span>LINK 01</span> 사람 사이의 링크
             </p>
             <h1 id="hero-title">
-              지나치지 않는
+              지켜보는 사람에서,
               <br />
-              사람,
-              <br />
-              <em>지켜줌인.</em>
+              <em>지켜주는 사람으로.</em>
             </h1>
             <p className="hero-lede">
-              온라인에서 마주친 자살유발정보를 보고 지나치지 않는 사람.
-              모니터링과 신고로 생명존중의 연결망을 넓혀 주세요.
+              온라인에서 마주친 자살유발정보를 지나치지 않고,
+              지켜줌인 활동으로 생명존중의 환경을 지켜 주세요.
             </p>
             <div className="hero-actions">
               <a
@@ -205,9 +203,9 @@ export default function Home() {
           <div className="about-copy">
             <p className="eyebrow">지켜줌인(人)이란?</p>
             <h2 id="about-title">
-              발견한 순간,
+              관심이 닿는 순간,
               <br />
-              <em>연결은 시작됩니다.</em>
+              <em>보호가 시작됩니다.</em>
             </h2>
             <p className="section-lede">
               지켜줌인은 생명존중문화 확산을 위해 온라인 자살유발정보를
@@ -228,9 +226,9 @@ export default function Home() {
               “
             </span>
             <p>
-              지나치지 않은 관심을,
+              지켜보는 관심을,
               <br />
-              <strong>지켜내는 행동으로.</strong>
+              <strong>지켜주는 행동으로.</strong>
             </p>
             <span className="quote-rule" aria-hidden="true" />
             <small>관심에서 신고까지, 사람 사이의 링크</small>
@@ -453,7 +451,7 @@ export default function Home() {
               <em>지켜주는 사람으로.</em>
             </h2>
             <p>
-              당신의 관심을 지켜줌인 활동과 신고로 연결해 주세요.
+              당신의 관심을 지켜줌인 활동과 공식 신고로 연결해 주세요.
             </p>
           </div>
           <div className="final-actions">
@@ -515,7 +513,7 @@ export default function Home() {
         </div>
         <div className="container footer-bottom">
           <span>사람 사이의 링크 · 2026</span>
-          <span>도움은 연결될 때 가까워집니다.</span>
+          <span>관심은 보호로 이어집니다.</span>
         </div>
       </footer>
 
