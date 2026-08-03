@@ -50,25 +50,21 @@ const activityCards = [
 const publicValues = [
   {
     index: "01",
-    eyebrow: "재단의 핵심가치",
     title: "존중",
     body: "국민의 소중한 생명을 보호하고 생명존중문화를 조성하는 일을 모든 예방 활동의 출발점으로 삼습니다.",
   },
   {
     index: "02",
-    eyebrow: "재단의 핵심가치",
     title: "공감",
     body: "위험 신호를 알아차리고 지속적인 관심을 가지며, 필요한 사람을 전문적인 도움으로 연결합니다.",
   },
   {
     index: "03",
-    eyebrow: "재단의 핵심가치",
     title: "협력",
     body: "정부·지역사회·민간기관·플랫폼·시민을 연결해 혼자서는 만들기 어려운 예방의 안전망을 넓힙니다.",
   },
   {
     index: "04",
-    eyebrow: "재단의 핵심가치",
     title: "전문성",
     body: "근거 기반 정책과 교육, 자살정보 분석 및 모니터링 체계로 관심이 실효성 있는 예방 행동이 되게 합니다.",
   },
@@ -287,7 +283,6 @@ export default function Home() {
                   <i aria-hidden="true" />
                 </div>
                 <div>
-                  <p>{value.eyebrow}</p>
                   <h3>{value.title}</h3>
                   <p>{value.body}</p>
                 </div>
