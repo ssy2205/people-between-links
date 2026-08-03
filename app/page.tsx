@@ -158,31 +158,13 @@ export default function Home() {
           <div
             className="hero-visual"
             role="img"
-            aria-label="두 손 사이의 금빛 실이 관심과 신고를 연결하는 캠페인 이미지"
+            aria-label="두 손 사이의 금빛 실을 그린 생명존중 캠페인 유화 이미지"
           >
             <img
               className="hero-visual-image"
               src="/life-thread-oil-v2.png"
               alt=""
             />
-            <div className="hero-visual-shade" aria-hidden="true" />
-            <span className="visual-chip">사람 사이의 링크</span>
-            <div className="visual-node visual-node-left">
-              <small>발견한 순간</small>
-              <strong>관심</strong>
-            </div>
-            <span className="visual-thread" aria-hidden="true" />
-            <div className="visual-node visual-node-right">
-              <small>이어지는 행동</small>
-              <strong>신고</strong>
-            </div>
-            <p className="visual-caption">
-              보고,
-              <br />
-              연결하고,
-              <br />
-              지키는 일.
-            </p>
           </div>
         </div>
 

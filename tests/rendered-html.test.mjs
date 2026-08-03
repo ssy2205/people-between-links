@@ -69,10 +69,10 @@ test("keeps metadata, fonts, artwork, and GitHub Pages source production-ready",
   assert.match(page, /life-thread-oil-v2\.png/);
   assert.match(page, /kfsp-ci\.png/);
   assert.match(page, /MISSION_URL/);
-  assert.match(page, /line-d/);
   assert.match(css, /NanumGothic-Regular\.woff2/);
-  assert.match(css, /\.node-four[\s\S]*color: var\(--paper\)/);
+  assert.match(css, /\.hero-copy[\s\S]*background: linear-gradient/);
   assert.doesNotMatch(page, /drawBanner|checklist|실제 광고 시안/);
+  assert.doesNotMatch(page, /visual-node|visual-thread|visual-caption/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
 
   await Promise.all([
